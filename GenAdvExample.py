@@ -40,7 +40,7 @@ def main(args):
     if os.path.exists(save_path_prefix)==False:
         os.makedirs(save_path_prefix)
     
-    num_epochs = 1000    
+    num_epochs = 1000   
     if args.model=='SACNet':    
         Model = SACNet(num_features=num_features,num_classes=num_classes)
     elif args.model=='DilatedFCN ':
@@ -52,13 +52,17 @@ def main(args):
         Model = SpaFCN(num_features=num_features,num_classes=num_classes)
     elif args.model=='SSFCN':
         Model = SSFCN(num_features=num_features,num_classes=num_classes)
-    Model = torch.nn.DataParallel(Model).cuda()
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    if device.type == 'cuda':
+        Model = torch.nn.DataParallel(Model).cuda()
+    else:
+        Model = Model.to(device)
     Model.train()
     optimizer = torch.optim.Adam(Model.parameters(),lr=args.lr,weight_decay=args.decay)
 
-    images = torch.from_numpy(X_train).float().cuda()
-    label = torch.from_numpy(Y_train).long().cuda()
-    criterion = CrossEntropy2d().cuda()      
+    images = torch.from_numpy(X_train).float().to(device)
+    label = torch.from_numpy(Y_train).long().to(device)
+    criterion = CrossEntropy2d().to(device)      
 
     # train the classification model
     for epoch in range(num_epochs):  
@@ -87,7 +91,7 @@ def main(args):
         print('Generate adversarial example with epsilon = %.2f'%(epsilon[i]))
         processed_image = Variable(images)
         processed_image = processed_image.requires_grad_()
-        label = torch.from_numpy(Y_tar).long().cuda()
+        label = torch.from_numpy(Y_tar).long().to(device)
                                                                     
         output = Model(processed_image)
         seg_loss = criterion(output,label)
