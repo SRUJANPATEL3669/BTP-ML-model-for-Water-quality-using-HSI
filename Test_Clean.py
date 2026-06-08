@@ -5,7 +5,7 @@ import torch
 from HyperTools import *
 from Models import *
 
-DataName = {1:'PaviaU',2:'Salinas'}
+DataName = {1:'PaviaU',2:'Salinas',3:'Indian_pines',4:'Houston13',5:'Houston18'}
 
 def main(args):
     if args.dataID==1:
@@ -16,6 +16,18 @@ def main(args):
         num_classes = 16  
         num_features = 204  
         save_pre_dir = './Data/Salinas/'
+    elif args.dataID==3:
+        num_classes = 16
+        num_features = 200
+        save_pre_dir = './Data/Indian_pines/'
+    elif args.dataID==4:
+        num_classes = 7
+        num_features = 48
+        save_pre_dir = './Data/Houston13/'
+    elif args.dataID==5:
+        num_classes = 7
+        num_features = 48
+        save_pre_dir = './Data/Houston18/'
 
     X = np.load(save_pre_dir+'X.npy')
     _,h,w = X.shape
@@ -87,7 +99,7 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()   
-    parser.add_argument('--dataID', type=int, default=1)
+    parser.add_argument('--dataID', type=int, default=0, help='0 for all datasets, 1 for PaviaU, 2 for Salinas')
     parser.add_argument('--save_path_prefix', type=str, default='./')
     parser.add_argument('--model', type=str, default='SACNet')
     
@@ -96,4 +108,11 @@ if __name__ == '__main__':
     parser.add_argument('--decay', type=float, default=5e-5)
     parser.add_argument('--epsilon', type=float, default=0.04)
 
-    main(parser.parse_args())
+    args = parser.parse_args()
+    if args.dataID == 0:
+        for data_id in [1, 2, 3, 4, 5]:
+            print(f"=== Running for dataset ID {data_id} ===")
+            args.dataID = data_id
+            main(args)
+    else:
+        main(args)

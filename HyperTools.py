@@ -56,6 +56,22 @@ def DrawResult(labels,imageID):
                             [180, 31, 35],
                             [123, 18, 20]])
         palette = palette*1.0/255
+    
+    elif imageID == 3:
+        row = 145
+        col = 145
+        palette = np.array([[37, 58, 150],[47, 78, 161],[56, 87, 166],[56, 116, 186],
+                            [51, 181, 232],[112, 204, 216],[119, 201, 168],[148, 204, 120],
+                            [188, 215, 78],[238, 234, 63],[246, 187, 31],[244, 127, 33],
+                            [239, 71, 34],[238, 33, 35],[180, 31, 35],[123, 18, 20]])
+        palette = palette*1.0/255
+        
+    elif imageID in [4, 5]:
+        row = 954
+        col = 210
+        palette = np.array([[216,191,216],[0,255,0],[0,255,255],[45,138,86],
+                            [255,0,255],[255,165,0],[255,0,0]])
+        palette = palette*1.0/255
            
     X_result = np.zeros((labels.shape[0],3))
     for i in range(1,num_class+1):
@@ -99,7 +115,28 @@ def LoadHSI(dataID=1,num_label=150):
         X = data['salinas_corrected']    
         data = sio.loadmat('./Data/Salinas_gt.mat')
         Y = data['salinas_gt']
+
+    elif dataID==3:
+        data = sio.loadmat('./Data/Indian_pines_corrected.mat')
+        X = data['indian_pines_corrected']    
+        data = sio.loadmat('./Data/Indian_pines_gt.mat')
+        Y = data['indian_pines_gt']
         
+    elif dataID==4:
+        import h5py
+        with h5py.File('./Data/Houston13.mat', 'r') as f:
+            X = f['ori_data'][:]
+        with h5py.File('./Data/Houston13_7gt.mat', 'r') as f:
+            Y = f['map'][:]
+        X = np.moveaxis(X, 0, -1)
+        
+    elif dataID==5:
+        import h5py
+        with h5py.File('./Data/Houston18.mat', 'r') as f:
+            X = f['ori_data'][:]
+        with h5py.File('./Data/Houston18_7gt.mat', 'r') as f:
+            Y = f['map'][:]
+        X = np.moveaxis(X, 0, -1)
 
     [row,col,n_feature] = X.shape
     K = row*col

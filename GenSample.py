@@ -10,6 +10,12 @@ def main(args):
         save_pre_dir = './Data/PaviaU/'
     elif dataID==2:
         save_pre_dir = './Data/Salinas/'
+    elif dataID==3:
+        save_pre_dir = './Data/Indian_pines/'
+    elif dataID==4:
+        save_pre_dir = './Data/Houston13/'
+    elif dataID==5:
+        save_pre_dir = './Data/Houston18/'
 
     Y -= 1
 
@@ -24,7 +30,14 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()   
-    parser.add_argument('--dataID', type=int, default=1)
+    parser.add_argument('--dataID', type=int, default=0, help='0 for all datasets, 1 for PaviaU, 2 for Salinas')
     parser.add_argument('--train_samples', type=int, default=300)
 
-    main(parser.parse_args())
+    args = parser.parse_args()
+    if args.dataID == 0:
+        for data_id in [1, 2, 3, 4, 5]:
+            print(f"=== Running for dataset ID {data_id} ===")
+            args.dataID = data_id
+            main(args)
+    else:
+        main(args)
