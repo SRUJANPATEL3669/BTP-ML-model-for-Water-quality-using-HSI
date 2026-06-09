@@ -101,7 +101,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()   
     parser.add_argument('--dataID', type=int, default=0, help='0 for all datasets, 1 for PaviaU, 2 for Salinas')
     parser.add_argument('--save_path_prefix', type=str, default='./')
-    parser.add_argument('--model', type=str, default='SACNet')
+    parser.add_argument('--model', type=str, default='all')
     
     # train
     parser.add_argument('--lr', type=float, default=5e-4)
@@ -109,10 +109,16 @@ if __name__ == '__main__':
     parser.add_argument('--epsilon', type=float, default=0.04)
 
     args = parser.parse_args()
-    if args.dataID == 0:
-        for data_id in [1, 2, 3, 4, 5]:
-            print(f"=== Running for dataset ID {data_id} ===")
-            args.dataID = data_id
+    
+    models = ['SACNet', 'DilatedFCN', 'SpeFCN', 'SpaFCN', 'SSFCN'] if args.model == 'all' else [args.model]
+    
+    for model in models:
+        args.model = model
+        print(f"=== Running for model {model} ===")
+        if args.dataID == 0:
+            for data_id in [1, 2, 3, 4, 5]:
+                print(f"=== Running for dataset ID {data_id} ===")
+                args.dataID = data_id
+                main(args)
+        else:
             main(args)
-    else:
-        main(args)
