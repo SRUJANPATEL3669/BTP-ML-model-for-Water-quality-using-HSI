@@ -144,14 +144,16 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     models = ['SACNet', 'DilatedFCN', 'SpeFCN', 'SpaFCN', 'SSFCN'] if args.model == 'all' else [args.model]
+    original_dataID = args.dataID
     
     for model in models:
         args.model = model
         print(f"=== Running for model {model} ===")
-        if args.dataID == 0:
+        if original_dataID == 0:
             for data_id in [1, 2, 3, 4, 5]:
                 print(f"=== Running for dataset ID {data_id} ===")
                 args.dataID = data_id
                 main(args)
         else:
+            args.dataID = original_dataID
             main(args)
